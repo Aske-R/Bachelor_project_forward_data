@@ -6,15 +6,15 @@ from pathlib import Path
 
 
 
-
 str_to_parent_folder=str(Path(__file__).resolve().parent.parent)
-files=str_to_parent_folder+"/forward_data/*/*.myOutput.root"
+files=str_to_parent_folder+"/forward_data_new/*/*.myOutput.root"
+
 tree_name=b'tree;1'
 list_of_variables=[b"p_et_calo",b"p_phi",b"p_eta",b"tag_et_calo",b"tag_phi",b"tag_eta"]
 
 #tree = uproot.open(str_to_parent_folder+"/forward_data/*/*.myOutput.root")[b'tree;1']
 
-tree = uproot.iterate(str_to_parent_folder+"/forward_data/*/*.myOutput.root",b'tree;1',[b"p_et_calo",b"p_phi",b"p_eta",b"tag_et_calo",b"tag_phi",b"tag_eta"])
+tree = uproot.iterate(str_to_parent_folder+"/forward_data_new/*/*.myOutput.root",b'tree;1',[b"p_et_calo",b"p_phi",b"p_eta",b"tag_et_calo",b"tag_phi",b"tag_eta"])
 
 list_of_dataframes = []
 for arrays in uproot.iterate(files,tree_name,list_of_variables,outputtype=pd.DataFrame,reportpath=True,reportfile=True):

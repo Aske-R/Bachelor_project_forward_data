@@ -9,9 +9,10 @@ from sklearn.model_selection import train_test_split
 from sklearn import model_selection, metrics # additional sklearn functions
 from matplotlib import pyplot as plt
 from pathlib import Path
+from datetime import datetime
 
 #open the root file using uproot
-def compute_lgbm(alg,path_to_data,path_to_tree,path_to_weights,name_reqs,name_excepts,useTrainCV=True,small_size=True):
+def compute_model(alg,path_to_data,path_to_tree,path_to_weights,name_reqs,name_excepts,useTrainCV=True,small_size=True):
     tree = uproot.open(path_to_data)[path_to_tree]
     # tree = uproot.open("../data/MixedTest.root")[b'tree;1']
     leaf_names=tree.keys()
@@ -80,7 +81,7 @@ def compute_lgbm(alg,path_to_data,path_to_tree,path_to_weights,name_reqs,name_ex
     plt.ylabel('Feature Importance Score')
     print(metrics.r2_score(y_test,y_pred))
     return model, X_train, X_test, y_test, y_pred, y_train
-def compute_xgboost(path_to_data,path_to_tree,path_to_weights,name_reqs,name_excepts):
+def compute_lightgbm(path_to_data,path_to_tree,path_to_weights,name_reqs,name_excepts):
     tree = uproot.open(path_to_data)[path_to_tree]
     leaf_names = tree.keys()
     subs= name_reqs
@@ -117,7 +118,11 @@ def compute_xgboost(path_to_data,path_to_tree,path_to_weights,name_reqs,name_exc
     X_train_weights = X_train['weights']
     X_train, X_test = X_train.drop(['weights'],axis=1), X_test.drop(['weights'],axis=1) 
     model=lightgbm.LGBMRegressor(objective='binary',random_state=5)
+    start = datetime.now() 
     model.fit(X_train,y_train.values.flatten(),sample_weight=X_train_weights)
+    stop = datetime.now()
+    execution_time_lgbm = stop-start
+    print(execution_time_lgbm)
     y_pred = model.predict(X_test)
     return model, X_train, X_test, y_test, y_pred, y_train
 
@@ -181,7 +186,7 @@ xgb1 = XGBClassifier(
  scale_pos_weight=1,
  seed=27)
 str_to_parent_folder=str(Path(__file__).resolve().parent.parent)
-model, X_train, X_test, y_test, y_pred, y_train= compute_xgboost(str_to_parent_folder+"/forward_MC/user.lehrke.mc16_13TeV.361106.Zee.EGAM8.e3601_e5984_s3126_r10724_r10726_p3648.ePID18_NTUP3_v01_myOutput.root/user.lehrke.17118381._000003.myOutput.root",b'tree;1',str_to_parent_folder+'/weights/weights_MC_03.csv',name_reqs,name_excepts)
+model, X_train, X_test, y_test, y_pred, y_train= compute_lightgbm(str_to_parent_folder+"/forward_MC/user.lehrke.mc16_13TeV.361106.Zee.EGAM8.e3601_e5984_s3126_r10724_r10726_p3648.ePID18_NTUP3_v01_myOutput.root/user.lehrke.17118381._000003.myOutput.root",b'tree;1',str_to_parent_folder+'/weights/weights_MC_03.csv',name_reqs,name_excepts)
 
 param_test1 = {
  'max_depth':range(3,10,2),
