@@ -117,7 +117,7 @@ def compute_lightgbm(path_to_data,path_to_tree,path_to_weights,name_reqs,name_ex
     #save the weights after the randomizing of the tests
     X_train_weights = X_train['weights']
     X_train, X_test = X_train.drop(['weights'],axis=1), X_test.drop(['weights'],axis=1) 
-    model=lightgbm.LGBMRegressor(objective='binary',random_state=5)
+    model=lightgbm.LGBMClassifier(random_state=5)
     start = datetime.now() 
     model.fit(X_train,y_train.values.flatten(),sample_weight=X_train_weights)
     stop = datetime.now()
@@ -126,7 +126,7 @@ def compute_lightgbm(path_to_data,path_to_tree,path_to_weights,name_reqs,name_ex
     y_pred = model.predict(X_test)
     return model, X_train, X_test, y_test, y_pred, y_train
 
-def compute_shap(ML_model,X_train,X_test,get_shap=False): 
+def compute_shap(ML_model,X_train,X_test,get_shap=False):   
     if get_shap:
         # følgende er nok en forkert måde at implementerer shap på
         explainer = shap.TreeExplainer(ML_model) 

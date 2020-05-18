@@ -45,6 +45,7 @@ def Invariant_mass(Invariant_mass_substuents):
 Invariant_mass_final,p_et_calo,tag_et_calo = Invariant_mass(Invariant_mass_substuents)
 
 
+print(Invariant_mass_final)
 
 
 def hists(data,binwidth):
